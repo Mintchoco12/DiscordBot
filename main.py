@@ -33,7 +33,7 @@ async def coinflip(ctx):
 
 #Chooses a random game
 @bot.command
-@lightbulb.command("game", "chooses a random game to play")
+@lightbulb.command("game", "Chooses a random game to play")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def game(ctx):
     #Games list
@@ -45,7 +45,7 @@ async def game(ctx):
 
 #Sends a random gif from tenor
 @bot.command
-@lightbulb.command("simp", "simping command")
+@lightbulb.command("simp", "Simping command")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def simp(ctx):
     apikey = os.getenv("APIKEY")  #Apikey
@@ -68,17 +68,41 @@ async def simp(ctx):
 
     await ctx.respond(url)
 
+#Sends a random gif from tenor
+@bot.command
+@lightbulb.command("clown", "Clown command")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def clown(ctx):
+    apikey = os.getenv("APIKEY")  #Apikey
+    limit = 10  #Amount of gif resuslts
+    searchTerm = "Clown" #searchTerm list
+    #Random number generator
+    rnd = random.randint(0, len(searchTerm))
+
+    #Gets the anon id
+    r = requests.get("https://api.tenor.com/v1/anonid?key=%s" % apikey)
+    anonId = json.loads(r.content) ["anon_id"]
+
+    #Gets a limited amount of gifs
+    r = requests.get("https://api.tenor.com/v1/search?q=%s&key=%s&limit=%s&anon_id=%s" % (searchTerm[rnd], apikey, limit, anonId))
+
+    gif = json.loads(r.content)
+    rnd = random.randint(0, limit - 1)
+    url = gif["results"][rnd]["media"][0]["gif"]["url"]
+
+    await ctx.respond(url)
+
+
 #Valorant parent
 @bot.command
-@lightbulb.command("valo", "all commands valorant related")
+@lightbulb.command("valo", "All commands valorant related")
 @lightbulb.implements(lightbulb.SlashCommandGroup)
 async def valorant(ctx):
     pass
 
-
 #Chooses between Ranked & Unrated
 @valorant.child
-@lightbulb.command("gamemode", "chooses either ranked or unrated")
+@lightbulb.command("gamemode", "Chooses either ranked or unrated")
 @lightbulb.implements(lightbulb.SlashSubCommand)
 async def gamemode(ctx):
     #Random number generator
@@ -94,7 +118,7 @@ async def gamemode(ctx):
 
 #Chooses a random agent to play
 @valorant.child
-@lightbulb.command("agent", "randomly chooses an agent")
+@lightbulb.command("agent", "Randomly chooses an agent")
 @lightbulb.implements(lightbulb.SlashSubCommand)
 async def agent(ctx):
     #Agent list
